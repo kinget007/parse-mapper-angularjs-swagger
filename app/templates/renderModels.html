@@ -1,0 +1,8 @@
+<pre ng-repeat="apiDocModel in data">
+<b>{{ apiDocModel.name }}</b>
+    <code ng-repeat="apiDocModelProperty in apiDocModel.properties">
+    <code ng-if="apiDocModelProperty.items">({{ apiDocModelProperty.items.type }})</code>{{ apiDocModelProperty.type }} {{ apiDocModelProperty.name }}
+    </code>
+ 
+</pre>
+ 

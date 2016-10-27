@@ -1,0 +1,25 @@
+{
+  "name": "parse_mapper",
+  "description": "ParseMapper AngularJS",
+  "main": "script.js",
+  "license": "ISC",
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "1.5.8",
+    "angular-sanitize": "1.5.8",
+    "angular-animate": "1.5.8",
+    "angular-ui-router": "0.3.1",
+    "angular-material": "1.1.1",
+    "material-design-icons-dist": "1.1.0",
+    "angular-diff-match-patch": "0.4.0",
+    "ng-file-upload": "12.2.12"
+  }
+}

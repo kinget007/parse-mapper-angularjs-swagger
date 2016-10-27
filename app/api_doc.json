@@ -1,0 +1,33 @@
+{
+    "api_docs": {
+        "apis": [
+            { //controller
+                "path": "/default/control-panel-rest",
+                "apis": [
+                    { //method
+                        "path": "/rest/control/update",
+                        "operations": [
+                            { // always only one operation
+                                "nickname": "MethodName",
+                                "method": "HttpMethod",
+                                "type": "TypeReturned", // primary or class
+                                "parameters": [
+                                    {
+                                        "name": "ParameterName",
+                                        "paramType": "ParamHttpType", // path/body
+                                        "type": "ParamType", // primary or class
+                                        "required": "bool", // true/false
+                                        "defaultValue": "value"
+                                    }
+                                ],
+                                "deprecated": "true/false"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+}
+
+// http(api_docs.apis[i].path).then(=apis[])

@@ -1,0 +1,7 @@
+<pre ng-repeat="itemService in data">
+<b>{{ itemService.name }}</b>
+    <code ng-repeat="itemMethod in itemService.methods">
+    {{ itemMethod.method }} {{ itemMethod.name }} {{ itemMethod.path }}
+    </code>
+ 
+</pre>

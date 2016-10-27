@@ -1,0 +1,43 @@
+<h1>
+    Models Diff
+</h1>
+
+<div layout="row">
+    <md-button class="md-raised md-primary" ng-click="modelsCtrl.actions.diffServices()">
+        <md-icon>
+            line_weight
+        </md-icon>
+        Diff Services
+    </md-button>
+
+    <span flex></span>
+
+    <md-button class="md-raised md-primary" ng-click="modelsCtrl.actions.diffData()">
+        <md-icon>
+            compare_arrows
+        </md-icon>
+        Process Data
+    </md-button>
+</div>
+
+<div flex layout="row">
+    <md-card flex>
+        <md-card-content>
+            <h2>Local API Docs</h2>
+            <pre ng-bind-html="modelsCtrl.data.localApiDocsData"></pre>
+            <p ng-if="!modelsCtrl.data.localApiDocsModels.length">
+                No local API Docs Data loaded
+            </p>
+        </md-card-content>
+    </md-card>
+
+    <md-card flex>
+        <md-card-content>
+            <h2>Server API Docs</h2>
+            <pre class="textdiff" line-diff left-obj="modelsCtrl.data.localApiDocsData" right-obj="modelsCtrl.data.apiDocsData"></pre>
+        </md-card-content>
+    </md-card>
+</div>
+
+<div render-data render-template="templates/renderModels.html" render-input="modelsCtrl.data.localApiDocsModels" render-output="modelsCtrl.data.localApiDocsData"></div>
+<div render-data render-template="templates/renderModels.html" render-input="modelsCtrl.data.apiDocsModels" render-output="modelsCtrl.data.apiDocsData"></div>

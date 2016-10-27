@@ -1,0 +1,16 @@
+import {Http} from '@angular/http'
+import {Injectable} from '@angular/core'
+
+@Injectable()
+export class CrmproviderDataService {
+    http:Http;
+
+    constructor(http:Http){
+        console.log('Creating base DataService');
+        this.http = http;
+    }
+
+    getEntries(){
+        return this.http.get('./people.json').map(res => res.json());
+    }
+}

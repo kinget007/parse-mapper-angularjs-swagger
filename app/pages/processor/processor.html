@@ -1,0 +1,67 @@
+<h1>
+    Data Diff
+</h1>
+
+<div layout="row" ng-init="processorCtrl.status.isDiffData = processorCtrl.data.framework.id == 'angular_v2' ? 'models' : 'services'">
+    <md-button class='md-raised md-primary' ng-click='processorCtrl.actions.downloadApiDocs()'>
+        <md-icon>
+            file_download
+        </md-icon>
+        Save API Docs
+    </md-button>
+    <md-button class='md-raised md-primary' ng-click='processorCtrl.actions.downloadBaseService()'>
+        <md-icon>
+            file_download
+        </md-icon>
+        Save Base Service
+    </md-button>
+    <md-button ng-if="processorCtrl.data.framework.id == 'angular_v2'" class="md-raised" ng-click="processorCtrl.actions.diffModels()" ng-class="{ 'md-primary': processorCtrl.status.isDiffData == 'models' }">
+        <md-icon>
+            {{ processorCtrl.status.isDiffData == 'models' ? 'file_download' : 'line_style' }}
+        </md-icon>
+        {{ processorCtrl.status.isDiffData == 'models' ? 'Save' : 'Diff' }} Models
+    </md-button>
+    <md-button class="md-raised" ng-click="processorCtrl.actions.diffServices()" ng-class="{ 'md-primary': processorCtrl.status.isDiffData == 'services' }">
+        <md-icon>
+            {{ processorCtrl.status.isDiffData == 'services' ? 'file_download' : 'line_weight' }}
+        </md-icon>
+        {{ processorCtrl.status.isDiffData == 'services' ? 'Save' : 'Diff' }} Services
+    </md-button>
+</div>
+
+<div flex layout="row">
+    <md-card flex>
+        <md-card-content>
+            <h2>Local API Docs</h2>
+            <pre ng-bind-html="processorCtrl.data.localApiDocsData"></pre>
+            <p ng-if="!processorCtrl.data.localApiDocsModels.length">
+                No local API Docs Data loaded
+            </p>
+        </md-card-content>
+    </md-card>
+
+    <md-card flex>
+        <md-card-content>
+            <h2>Server API Docs</h2>
+            <pre class="textdiff" line-diff left-obj="processorCtrl.data.localApiDocsData" right-obj="processorCtrl.data.apiDocsData"></pre>
+        </md-card-content>
+    </md-card>
+</div>
+
+<!-- <div render-base-service='appName' render-base-service-data='processorCtrl.data.baseServiceData'></div> -->
+
+<div ng-if="processorCtrl.data.framework.id == 'angular_v1'">
+    <div render-data render-template="templates/angular_v1/renderBaseService.html" render-input="processorCtrl.data.apiDocsModels" render-output="processorCtrl.data.baseServiceData"></div>
+    <div render-data render-template="templates/angular_v1/renderServices.html" render-input="processorCtrl.data.localApiDocsModelsData" render-output="processorCtrl.data.localApiDocsData"></div>
+    <div render-data render-template="templates/angular_v1/renderServices.html" render-input="processorCtrl.data.apiDocsModelsData" render-output="processorCtrl.data.apiDocsData"></div>
+</div>
+
+<div ng-if="processorCtrl.data.framework.id == 'angular_v2'">
+    <div render-data render-template="templates/angular_v2/renderBaseService.html" render-input="processorCtrl.data.apiDocsModels" render-output="processorCtrl.data.baseServiceData"></div>
+
+    <div ng-if="processorCtrl.status.isDiffData == 'models'" render-data render-template="templates/angular_v2/renderModels.html" render-input="processorCtrl.data.localApiDocsModels" render-output="processorCtrl.data.localApiDocsData"></div>
+    <div ng-if="processorCtrl.status.isDiffData == 'models'" render-data render-template="templates/angular_v2/renderModels.html" render-input="processorCtrl.data.apiDocsModels" render-output="processorCtrl.data.apiDocsData"></div>
+
+    <div ng-if="processorCtrl.status.isDiffData == 'services'" render-data render-template="templates/angular_v2/renderServices.html" render-input="processorCtrl.data.localApiDocsModelsData" render-output="processorCtrl.data.localApiDocsData"></div>
+    <div ng-if="processorCtrl.status.isDiffData == 'services'" render-data render-template="templates/angular_v2/renderServices.html" render-input="processorCtrl.data.apiDocsModelsData" render-output="processorCtrl.data.apiDocsData"></div>
+</div>

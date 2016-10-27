@@ -1,0 +1,19 @@
+{
+  "name": "parse_mapper",
+  "version": "1.0.0",
+  "description": "ParseMapper AngularJS",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors-anywhere": "0.4.0",
+    "express": "4.13.4",
+    "open": "0.0.5",
+    "body-parser": "1.15.1",
+    "gulp": "3.9.1",
+    "gulp-sass": "2.3.1"
+  }
+}

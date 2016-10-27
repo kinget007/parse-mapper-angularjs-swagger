@@ -1,0 +1,6 @@
+<pre ng-repeat="apiDocModel in data">
+export interface I{{ apiDocModel.name }} {<code ng-repeat="apiDocModelProperty in apiDocModel.properties">
+    {{ apiDocModelProperty.name }}: {{ apiDocModelProperty.type == 'array' ? ((apiDocModelProperty.items.type[0].toUpperCase() == apiDocModelProperty.items.type[0] ? 'I' : '') + apiDocModelProperty.items.type + '[]') : ((apiDocModelProperty.type[0].toUpperCase() == apiDocModelProperty.type[0] ? 'I' : '') + apiDocModelProperty.type) }}<code ng-if="!$last">,</code></code>
+}
+ 
+</pre>

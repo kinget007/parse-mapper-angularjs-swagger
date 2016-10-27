@@ -1,0 +1,64 @@
+// _exceptionService ?
+
+import { Injectable } from 'angular2/core';
+import { Http, Response } from 'angular2/http';
+import { Observable } from 'rxjs/Rx';
+
+@Injectable()
+export class DataService {
+	constructor(private _http Http) {}
+
+	getSomethings() {
+		return this._http.get('api/path/to/many/something')
+						 .map((response: Response) => <Something[]>response.json().data)
+						 .do(data => console.log(data))
+						 .catch(this.retrieveResponseError);
+	}
+
+    serverCall(url: string, httpMethod: string, dataParams: IHttpObject) {
+                    var deferred = $q.defer();
+
+                    dataParams = dataParams || {};
+                    dataParams.params = dataParams.params || {};
+                    dataParams.headers = dataParams.headers || {};
+
+                    if (dataParams.paths) {
+                        Object.keys(dataParams.paths).forEach(function(itemPathKey) {
+                            url = url.replace('{' + itemPathKey + '}', dataParams.paths[itemPathKey]);
+                        });
+                    }
+
+                    // var localStorageService = $injector.get('localStorageService');
+                    // var authData = localStorageService.get('app_auth');
+                    // if (authData) {
+                    //     dataParams.headers.Authorization = 'Bearer ' + authData.token;
+                    // }
+
+                    this._http({
+                        url: location.protocol + '//' + location.host + url,
+                        method: httpMethod,
+                        params: dataParams.params,
+                        data: dataParams.data,
+                        headers: dataParams.headers,
+                        responseType: dataParams.responseType
+                    }).then(function (response) {
+                        deferred.resolve(response && response.data);
+                    }, function (response) {
+                        deferred.reject(retrieveResponseError(response && response.data));
+                    });
+
+                    return deferred.promise;
+                }
+
+	retrieveResponseError(resultError: Response) {
+        var error = resultError.json();
+		return Observable.throw(error && (error.message || error.error_description) || 'Oops, operatia a esuat!\n\rVa rugam reincercati sau contactati suport.');
+	}
+}
+
+export interface IHttpObject {
+    params?: Object,
+    data?: Object,
+    headers?: Object,
+    responseType?: string
+}

@@ -1,0 +1,89 @@
+<pre>
+(function() {
+  'use strict';
+
+  angular
+    .module('{{ appName }}.dataservice', [])
+    .factory('dataService', dataService)
+    .factory('requestTracker', requestTracker)
+    .config(config);
+
+  /* @ngInject */
+  function dataService($http, $q, API_URL) {
+    var service = {};
+
+    function retrieveResponseError(pResponse) {
+      return (pResponse.data && pResponse.data.errorInfo && pResponse.data.errorInfo.errorMsg) || "There's a server issue, try again or contact support.";
+    }
+
+    function serverCall(pUrl, pHttpMethod, pDataParams) {
+      var deferred = $q.defer();
+
+      var dataParams = pDataParams || {};
+      dataParams.params = dataParams.params || {};
+      dataParams.headers = dataParams.headers || {};
+
+      if (dataParams.paths) {
+        Object.keys(dataParams.paths).forEach(function(itemPathKey) {
+          pUrl = pUrl.replace('{' + itemPathKey + '}', dataParams.paths[itemPathKey]);
+        });
+      }
+
+      $http({
+        url: API_URL + pUrl,
+        method: pHttpMethod,
+        params: dataParams.params,
+        data: dataParams.data,
+        headers: dataParams.headers,
+        responseType: dataParams.responseType
+      }).then(function(rResponse) {
+        if (rResponse.data && rResponse.data.errorInfo) {
+          deferred.reject(retrieveResponseError(rResponse));
+          return;
+        }
+
+        deferred.resolve(rResponse && rResponse.data);
+      }, function(rResponse) {
+        deferred.reject(retrieveResponseError(rResponse));
+      });
+
+      return deferred.promise;
+    }
+
+    service.createService = function(pService, pRouteprefix) {
+      pService.addMethod = function(pName, pMethod, pRoute) {
+        pService[pName] = function(pDataParams) {
+          return serverCall(pRouteprefix + pRoute, pMethod, pDataParams);
+        };
+        return pService;
+      };
+      return pService;
+    };
+
+    return service;
+  }
+
+  /* @ngInject */
+  function requestTracker() {
+    return {
+      request: function(config) {
+        var requestId = 'xxxxxxxxxxxx4xxxyxxxxxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+          var r = (Math.random() * 16) | 0;
+          var v = (c == 'x') ? r : (r & 0x3) | 0x8;
+          return v.toString(16);
+        });
+
+        config.headers['X-Request-ID'] = 'APP-' + requestId;
+
+        return config;
+      }
+    };
+  }
+
+  /* @ngInject */
+  function config($httpProvider) {
+    $httpProvider.interceptors.push('requestTracker');
+  }
+
+})();
+</pre>

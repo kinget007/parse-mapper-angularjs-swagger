@@ -1,0 +1,65 @@
+<h1>
+    App API Info
+</h1>
+
+<md-content layout-padding>
+    <form name="apiDocs" layout="column">
+        <div layout="row">
+            <md-input-container class="md-block" flex>
+              <label>App name</label>
+              <input required type="text" name="name"
+                     ng-model="introCtrl.data.appName" />
+              <div ng-messages="apiDocs.name.$error" role="alert">
+                <div ng-message="required">app name is required</div>
+              </div>
+            </md-input-container>
+
+            <md-input-container class="md-block" flex>
+              <label>Api Docs URL</label>
+              <input required type="text" name="url"
+                     ng-model="introCtrl.data.apiDocsUrl" />
+                     <!--ng-pattern="/^(http|ftp|https)://[\w-]+(\.[\w-]+)+([\w.,@?^=%&amp;:/~+#-]*[\w@?^=%&amp;/~+#-])?$/"-->
+              <div ng-messages="apiDocs.url.$error" role="alert">
+                <div ng-message="required">url is required</div>
+                <div ng-message="pattern">invalid URL</div>
+              </div>
+            </md-input-container>
+
+            <md-input-container class="md-block" flex>
+                <label>Framework</label>
+                <md-select ng-model="introCtrl.data.framework" name="framework" required>
+                    <md-option ng-repeat="framework in introCtrl.data.frameworks" value="{{ framework }}">
+                        {{ framework.name }}
+                    </md-option>
+                </md-select>
+                <div ng-messages="apiDocs.framework.$error" role="alert">
+                  <div ng-message="required">target framework is required</div>
+                </div>
+            </md-input-container>
+        </div>
+
+        <div layout="column">
+
+            <div layout="row">
+                <span flex></span>
+                <small style="margin-top: 15px">{{ introCtrl.data.localApiDocsJson.name }}</small>
+                <md-button class="md-raised md-default" ngf-select ngf-accept="'.json'" ng-model="introCtrl.data.localApiDocsJson">
+                    <md-icon>
+                        file_upload
+                    </md-icon>
+                    add local docs
+                </md-button>
+            </div>
+
+            <div layout="row">
+                <span flex></span>
+                <md-button class="md-raised md-primary" ng-disabled="apiDocs.$invalid || introCtrl.status.isLoading" ng-click="introCtrl.actions.syncApiDocs(introCtrl.data.appName, introCtrl.data.apiDocsUrl)">
+                    <md-icon>
+                        file_download
+                    </md-icon>
+                    process docs
+                </md-button>
+            </div>
+        </div>
+    </form>
+</md-content>
