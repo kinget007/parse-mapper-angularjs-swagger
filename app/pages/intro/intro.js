@@ -15,6 +15,7 @@
           appService.clearData();
 
           ctrl.data.frameworks = appService.getFrameworks();
+		  ctrl.data.framework = JSON.stringify(ctrl.data.frameworks[0]);
 
           $scope.$watch(function () {
               return ctrl.data.localApiDocsJson;
@@ -35,7 +36,16 @@
           $scope.$watch(function () {
               return ctrl.data.framework;
           }, function (newFramework) {
-              appService.setFramework(newFramework && JSON.parse(newFramework));
+              if (!newFramework) {
+                  return; 
+              }
+
+              newFramework = JSON.parse(newFramework);
+              appService.setFramework(newFramework);
+
+              if (newFramework.id == 'angular_v2') {
+				  alert('Angular 2 is not fully supported - TO BE IMPLEMENTED');
+			  }
           });
 
 
