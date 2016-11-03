@@ -51,7 +51,7 @@
     }
 
     service.createService = function(pService, pRouteprefix) {
-      pService.addMethod = function(pName, pMethod, pRoute) {
+      pService.createMethod = function(pName, pMethod, pRoute) {
         pService[pName] = function(pDataParams) {
           return serverCall(pRouteprefix + pRoute, pMethod, pDataParams);
         };

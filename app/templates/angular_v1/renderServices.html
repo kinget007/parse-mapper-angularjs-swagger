@@ -4,28 +4,22 @@
  
   angular
     .module('{{ appName }}.dataservices', [
-      <code>'{{ appName }}.dataservice'</code></pre><code ng-repeat='itemService in data'>,
+      '{{ appName }}.dataservice'<code ng-repeat='itemService in data'>,
       '{{ appName }}.dataservices.{{ itemService.name }}'</code>
-<pre>
   ]);
-})();
+})();<code ng-repeat='itemService in data'>
  
-</pre>
-
-<pre ng-repeat='itemService in data'>
 (function () {
   'use strict';
  
   angular
     .module('{{ appName }}.dataservices.{{ itemService.name }}DataService', [])
     .factory('{{ itemService.name }}DataService', {{ itemService.name }}DataService);
-   
+ 
   /* @ngInject */
   function {{ itemService.name }}DataService(dataService) {
     return dataService.createService(this, '{{ itemService.basePath }}')<code ng-repeat='itemMethod in itemService.methods'>
-      .addMethod('{{ itemMethod.name }}', '{{ itemMethod.method }}', '{{ itemMethod.path }}')<code ng-if="$last">;</code></code>
-  }]);
-})();
- 
+      .createMethod('{{ itemMethod.name }}', '{{ itemMethod.method }}', '{{ itemMethod.path }}')<code ng-if="$last">;</code></code>
+  }
+})();</code>
 </pre>
- 

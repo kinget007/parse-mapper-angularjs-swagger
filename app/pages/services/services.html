@@ -24,7 +24,7 @@
     <md-card flex>
         <md-card-content>
             <h2>Local API Docs</h2>
-            <pre ng-bind-html="servicesCtrl.data.localApiDocsData"></pre>
+            <pre ng-bind-html="servicesCtrl.data.localApiDocsData" ng-show="servicesCtrl.data.localApiDocsModelsData.length"></pre>
             <p ng-if="!servicesCtrl.data.localApiDocsModelsData.length">
                 No local API Docs Data loaded
             </p>
