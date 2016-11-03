@@ -200,11 +200,8 @@
                         return [];
                     }
 
-                    if (itemApiDocs.tags && itemApiDocs.tags.length) {
-                        console.info('API tags available - ignoring apis not tagged'); //   using tags to specify only available api controllers
-                        itemApiDocs.tagsBuild = false;
-                    } else {
-                        console.info('retrieving all tags');
+                    itemApiDocs.tagsBuild = false;
+                    if (!itemApiDocs.tags) {
                         itemApiDocs.tagsBuild = true;
                         itemApiDocs.tags = [];
                     }
@@ -212,7 +209,7 @@
                     var methods = methodsPaths.map(function (itemMethodPath) {
                         var methodInfo = itemApiDocs.paths[itemMethodPath][Object.keys(itemApiDocs.paths[itemMethodPath])[0]];
                         if (itemApiDocs.tagsBuild && methodInfo.tags) {
-                            itemApiDocs.tags = itemApiDocs.tags.concat(methodInfo.tags).removeDuplicates();
+                            itemApiDocs.tags = itemApiDocs.tags.concat(methodInfo.tags);
                         }
 
                         return {
@@ -232,30 +229,28 @@
                                     typeModel: Object.keys(itemApiDocs.definitions[itemParameter.type].properties).map(function (itemParameterTypeKey) {
                                         return angular.extend({
                                             name: itemParameterTypeKey
-                                        }, apiEndpoints.models[itemParameter.type].properties[itemParameterTypeKey])
+                                        }, apiEndpoints.models[itemParameter.type].properties[itemParameterTypeKey]);
                                     })
-                                })
+                                });
                             }),
                             ctrls: methodInfo.tags
-                        }
+                        };
                     });
 
-                    if (itemApiDocs.tagsBuild) {
-                        itemApiDocs.tags = itemApiDocs.tags.map(function(iItemApiTag) {
-                            return {
-                                name: iItemApiTag
-                            };
-                        });
-                    }
+                    itemApiDocs.tags = itemApiDocs.tags.map(function(iItemApiTag) {
+                        return (iItemApiTag.name || iItemApiTag).replace('-controller', '').replace('controller', '').dashToCamelCase();
+                    }).removeDuplicates();
 
-                    var apiDocsdata = itemApiDocs.tags.map(function(itemController) {
+                    var apiDocsdata = itemApiDocs.tags.map(function(iItemApiTag) {
                         return {
-                            name: itemController.name.replace('-controller', '').replace('controller', '').dashToCamelCase(),
+                            name: iItemApiTag,
                             basePath: itemApiDocs.basePath,
-                            methods: methods.filter(function(itemMethod) { // get methods for selected controller
-                                return itemMethod.ctrls.indexOf(itemController.name) != -1;
+                            methods: methods.filter(function(iItemMethod) { // get methods for selected controller
+                                return iItemMethod.ctrls.filter(function(iItemMethodCtrl) {
+                                    return iItemMethodCtrl.replace('-controller', '').replace('controller', '').dashToCamelCase() == iItemApiTag;
+                                })[0];
                             })
-                        }
+                        };
                     });
 
                     return apiDocsdata.filter(function(itemController) { // ignore empty controllers
@@ -266,7 +261,7 @@
 })();
 
 String.prototype.dashToCamelCase = function () {
-    return this.replace(/(\-[a-z])/g, function ($1) {
+    return (this.charAt(0).toLowerCase() + this.slice(1)).replace(/(\-[a-z])/g, function ($1) {
         return $1.toUpperCase().replace('-', '');
     });
 };
