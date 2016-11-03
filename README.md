@@ -34,9 +34,24 @@ npm start
 
 ## Use data services in your angular app
 define API_URL with your server api url, as angular constant
-load dataservice.js and dataservices.js
-set dataservices as dependecy for your app
-now you have access to your api directly based on your server controller/method name
+```javascript
+angular
+  .module('app.constants', [])
+  .constant('API_URL', 'http://localhost:8080');
+```
+
+load dataservice.js and dataservices.js, then set only dataservices as dependecy for your app
+```javascript
+angular
+  .module('app', [
+    'ngAnimate',
+    'ngSanitize',
+	'app.constants',
+    'app.dataservices'
+])
+```
+
+now you have access to your api **directly** based on your server controller/method name and sending HTTP Objects
 
 **when api changes, just update the dataservices.js alone using the webapp (diff included)**
 
