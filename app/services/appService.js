@@ -206,35 +206,38 @@
                         itemApiDocs.tags = [];
                     }
 
-                    var methods = methodsPaths.map(function (itemMethodPath) {
-                        var methodInfo = itemApiDocs.paths[itemMethodPath][Object.keys(itemApiDocs.paths[itemMethodPath])[0]];
-                        if (itemApiDocs.tagsBuild && methodInfo.tags) {
-                            itemApiDocs.tags = itemApiDocs.tags.concat(methodInfo.tags);
-                        }
+                    var methods = [];
+                    methodsPaths.forEach(function (itemMethodPath) {
+                        Object.keys(itemApiDocs.paths[itemMethodPath]).forEach(function(iMethod) {
+                            var methodInfo = itemApiDocs.paths[itemMethodPath][iMethod];
+                            if (itemApiDocs.tagsBuild && methodInfo.tags) {
+                                itemApiDocs.tags = itemApiDocs.tags.concat(methodInfo.tags);
+                            }
 
-                        return {
-                            name: methodInfo.operationId,
-                            path: itemMethodPath,
-                            method: Object.keys(itemApiDocs.paths[itemMethodPath])[0].toUpperCase(),
-                            // deprecated: ??,
-                            type: (methodInfo.responses[200] && methodInfo.responses[200].schema && (methodInfo.responses[200].schema.type || methodInfo.responses[200].schema['$ref'].split('/').pop())) ||
-							      (methodInfo.responses[201] && methodInfo.responses[201].schema && (methodInfo.responses[201].schema.type || methodInfo.responses[201].schema['$ref'].split('/').pop())),
-                            parameters: methodInfo.parameters && methodInfo.parameters.map(function (itemParameter) {
-                                return angular.extend({
-                                    name: itemParameter.name,
-                                    paramType: itemParameter.in,
-                                    type: itemParameter.type,
-                                    required: itemParameter.required
-                                }, Object.keys(itemApiDocs.definitions || {}).indexOf(itemParameter.type) == -1 ? {} : { // populate class implementation
-                                    typeModel: Object.keys(itemApiDocs.definitions[itemParameter.type].properties).map(function (itemParameterTypeKey) {
-                                        return angular.extend({
-                                            name: itemParameterTypeKey
-                                        }, apiEndpoints.models[itemParameter.type].properties[itemParameterTypeKey]);
-                                    })
-                                });
-                            }),
-                            ctrls: methodInfo.tags
-                        };
+                            methods.push({
+                                name: methodInfo.operationId,
+                                path: itemMethodPath,
+                                method: iMethod.toUpperCase(),
+                                // deprecated: ??,
+                                type: (methodInfo.responses[200] && methodInfo.responses[200].schema && (methodInfo.responses[200].schema.type || methodInfo.responses[200].schema['$ref'].split('/').pop())) ||
+                                    (methodInfo.responses[201] && methodInfo.responses[201].schema && (methodInfo.responses[201].schema.type || methodInfo.responses[201].schema['$ref'].split('/').pop())),
+                                parameters: methodInfo.parameters && methodInfo.parameters.map(function (itemParameter) {
+                                    return angular.extend({
+                                        name: itemParameter.name,
+                                        paramType: itemParameter.in,
+                                        type: itemParameter.type,
+                                        required: itemParameter.required
+                                    }, Object.keys(itemApiDocs.definitions || {}).indexOf(itemParameter.type) == -1 ? {} : { // populate class implementation
+                                        typeModel: Object.keys(itemApiDocs.definitions[itemParameter.type].properties).map(function (itemParameterTypeKey) {
+                                            return angular.extend({
+                                                name: itemParameterTypeKey
+                                            }, apiEndpoints.models[itemParameter.type].properties[itemParameterTypeKey]);
+                                        })
+                                    });
+                                }),
+                                ctrls: methodInfo.tags
+                            });
+                        });
                     });
 
                     itemApiDocs.tags = itemApiDocs.tags.map(function(iItemApiTag) {
