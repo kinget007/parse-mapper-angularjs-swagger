@@ -66,13 +66,3 @@
                 }
             }]);
 })();
-
-String.prototype.dashToCamelCase = function () {
-    return this.replace(/(\-[a-z])/g, function ($1) {
-        return $1.toUpperCase().replace('-', '');
-    });
-};
-
-String.prototype.capitalizeFirstLetter = function () {
-    return this.charAt(0).toUpperCase() + this.slice(1);
-};

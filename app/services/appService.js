@@ -157,10 +157,6 @@
                     }
 
                     var apiDocsdata = itemApiDocs.apis.map(function (itemApiDoc, index) {
-                        if (itemApiDoc.path.toLowerCase().indexOf('controller') == -1) {
-                            console.info(itemApiDoc.description + ' API available at ' + itemApiDoc.path + ' does not support Controller naming convention!\nPlease rename to ' + itemApiDoc.path.split('/').pop().dashToCamelCase().capitalizeFirstLetter() + 'Controller\nnote: controller will still be processed');
-                        }
-
                         var apiEndpoints = itemApiDocs.apiEndpoints[index];
 
                         return {
@@ -196,27 +192,36 @@
                         return itemController.methods.length > 0;
                     });
                 }
-
+                
                 function processApiDocsV2Data(itemApiDocs) {
-                    if (!itemApiDocs.tags || !itemApiDocs.tags.length) {
+                    var methodsPaths = Object.keys(itemApiDocs.paths);
+                    if (!methodsPaths.length) {
+                        console.info('NO apis available');
                         return [];
                     }
 
-                    var methodsPaths = Object.keys(itemApiDocs.paths);
-
-                    if (!methodsPaths.length) {
-                        return [];
+                    if (itemApiDocs.tags && itemApiDocs.tags.length) {
+                        console.info('API tags available - ignoring apis not tagged'); //   using tags to specify only available api controllers
+                        itemApiDocs.tagsBuild = false;
+                    } else {
+                        console.info('retrieving all tags');
+                        itemApiDocs.tagsBuild = true;
+                        itemApiDocs.tags = [];
                     }
 
                     var methods = methodsPaths.map(function (itemMethodPath) {
                         var methodInfo = itemApiDocs.paths[itemMethodPath][Object.keys(itemApiDocs.paths[itemMethodPath])[0]];
+                        if (itemApiDocs.tagsBuild && methodInfo.tags) {
+                            itemApiDocs.tags = itemApiDocs.tags.concat(methodInfo.tags).removeDuplicates();
+                        }
+
                         return {
                             name: methodInfo.operationId,
                             path: itemMethodPath,
                             method: Object.keys(itemApiDocs.paths[itemMethodPath])[0].toUpperCase(),
                             // deprecated: ??,
-                            type: methodInfo.responses[200] && (methodInfo.responses[200].schema.type || methodInfo.responses[200].schema['$ref'].split('/').pop()) ||
-							      methodInfo.responses[201] && (methodInfo.responses[201].schema.type || methodInfo.responses[201].schema['$ref'].split('/').pop()),
+                            type: (methodInfo.responses[200] && methodInfo.responses[200].schema && (methodInfo.responses[200].schema.type || methodInfo.responses[200].schema['$ref'].split('/').pop())) ||
+							      (methodInfo.responses[201] && methodInfo.responses[201].schema && (methodInfo.responses[201].schema.type || methodInfo.responses[201].schema['$ref'].split('/').pop())),
                             parameters: methodInfo.parameters && methodInfo.parameters.map(function (itemParameter) {
                                 return angular.extend({
                                     name: itemParameter.name,
@@ -235,11 +240,15 @@
                         }
                     });
 
-                    var apiDocsdata = itemApiDocs.tags.map(function(itemController) {
-                        if (itemController.name.toLowerCase().indexOf('controller') == -1) {
-                            console.info(itemController.description + ' API, ' + itemController.name + ' does not support Controller naming convention!\nPlease rename to ' + itemController.name.dashToCamelCase().capitalizeFirstLetter() + 'Controller\nnote: controller will still be processed');
-                        }
+                    if (itemApiDocs.tagsBuild) {
+                        itemApiDocs.tags = itemApiDocs.tags.map(function(iItemApiTag) {
+                            return {
+                                name: iItemApiTag
+                            };
+                        });
+                    }
 
+                    var apiDocsdata = itemApiDocs.tags.map(function(itemController) {
                         return {
                             name: itemController.name.replace('-controller', '').replace('controller', '').dashToCamelCase(),
                             basePath: itemApiDocs.basePath,
@@ -255,3 +264,23 @@
                 }
             }]);
 })();
+
+String.prototype.dashToCamelCase = function () {
+    return this.replace(/(\-[a-z])/g, function ($1) {
+        return $1.toUpperCase().replace('-', '');
+    });
+};
+
+String.prototype.capitalizeFirstLetter = function () {
+    return this.charAt(0).toUpperCase() + this.slice(1);
+};
+
+Array.prototype.removeDuplicates = function() {
+    return this.reduce(function(accum, current) {
+        if (accum.indexOf(current) == -1) {
+            accum.push(current);
+        }
+
+        return accum;
+    }, []);
+};
