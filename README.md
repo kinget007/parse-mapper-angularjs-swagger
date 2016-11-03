@@ -94,5 +94,6 @@ petDataService.updatePet({
 ```
 
 ## NOTE:
-- angular 1.x.x data services supported only
+- thanks to Bogdan Merlusca for support
+- angular 1.x.x data services supported only (angular 2 may be supported in near future - partial implemented)
 - this tool provide a way to call api as you would call controller methods directly from the server by a request object
