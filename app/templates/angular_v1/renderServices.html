@@ -1,15 +1,15 @@
 <pre>
-(function () {
+(function() {
   'use strict';
  
   angular
     .module('{{ appName }}.dataservices', [
       '{{ appName }}.dataservice'<code ng-repeat='itemService in data'>,
       '{{ appName }}.dataservices.{{ itemService.name }}'</code>
-  ]);
+    ]);
 })();<code ng-repeat='itemService in data'>
  
-(function () {
+(function() {
   'use strict';
  
   angular

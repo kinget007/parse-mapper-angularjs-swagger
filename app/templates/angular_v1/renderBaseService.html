@@ -30,7 +30,7 @@
       }
 
       $http({
-        url: API_URL + pUrl,
+        url: (API_URL + pUrl).replace(/([^:]\/)\/+/g, '$1'),
         method: pHttpMethod,
         params: dataParams.params,
         data: dataParams.data,

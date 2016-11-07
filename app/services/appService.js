@@ -209,6 +209,10 @@
                     var methods = [];
                     methodsPaths.forEach(function (itemMethodPath) {
                         Object.keys(itemApiDocs.paths[itemMethodPath]).forEach(function(iMethod) {
+                            if(['POST', 'GET', 'PUT', 'DELETE', 'HEAD', 'OPTIONS', 'CONNECT'].indexOf(iMethod.toUpperCase()) == -1) {
+                                return;
+                            }
+
                             var methodInfo = itemApiDocs.paths[itemMethodPath][iMethod];
                             if (itemApiDocs.tagsBuild && methodInfo.tags) {
                                 itemApiDocs.tags = itemApiDocs.tags.concat(methodInfo.tags);
