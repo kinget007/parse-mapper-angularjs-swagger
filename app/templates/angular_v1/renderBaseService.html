@@ -24,8 +24,8 @@
       dataParams.headers = dataParams.headers || {};
 
       if (dataParams.paths) {
-        Object.keys(dataParams.paths).forEach(function(itemPathKey) {
-          pUrl = pUrl.replace('{' + itemPathKey + '}', dataParams.paths[itemPathKey]);
+        Object.keys(dataParams.paths).forEach(function(iPathKey) {
+          pUrl = pUrl.replace('{' + iPathKey + '}', dataParams.paths[iPathKey]);
         });
       }
 
