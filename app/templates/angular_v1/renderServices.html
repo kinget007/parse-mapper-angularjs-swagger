@@ -14,10 +14,10 @@
  
   angular
     .module('{{ appName }}.dataservices.{{ itemService.name }}', [])
-    .factory('{{ itemService.name }}DataService', {{ itemService.name }}DataService);
+    .factory('{{ itemService.name }}DataService', service);
  
   /* @ngInject */
-  function {{ itemService.name }}DataService(dataService) {
+  function service(dataService) {
     return dataService.createService(this, '{{ itemService.basePath }}')<code ng-repeat='itemMethod in itemService.methods'>
       .createMethod('{{ itemMethod.name }}', '{{ itemMethod.method }}', '{{ itemMethod.path }}')<code ng-if="$last">;</code></code>
   }
